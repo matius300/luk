@@ -1,0 +1,127 @@
+<h1 id="lukminer---luks-cryptonight-family-miner">lukMiner - luk's Cryptonight(-family) Miner</h1>
+<p>This README's main purpose is to instruct on how to use and run the miner; for more information relating to the miner - supported platforms, supported coins, developer shares for the various configuration, performance for various hardware platforms, plans for the future, temperature on the back side of the moon, or anything else, please refer to either one of the three links below:</p>
+<ul>
+<li><a href="http://www.lukminer.com">http://www.lukminer.com</a> : The &quot;official&quot; Wordpress blog I use for distributing lukMiner-related news and updates</li>
+<li><a href="http://www.lukminer.net/releases">http://www.lukminer.net/releases</a> : Latest releases for the miner</li>
+<li><a href="http://sites.google.com/site/lukxmrminer">http://sites.google.com/site/lukxmrminer</a> : The &quot;original&quot; google site with some more general information on the miner.</li>
+</ul>
+<h1 id="using-lukminer">Using LukMiner</h1>
+<p>Basic Usage is <code>./&lt;binaryName&gt; &lt;args&gt;</code> , with binary name and arguments as follows:</p>
+<h2 id="pick-your-binary">Pick your binary</h2>
+<p>Depending on your architecture, pick:</p>
+<ul>
+<li><p><code>luk-phi</code> : for mining on 'bootable' x200 Xeon Phi nodes</p></li>
+<li><p><code>luk-mpss-knl</code> : For MPSS offload to x200 Phi Cards (7220 or 7240), on &quot;regular&quot; KNL card rigs with a regular CPU (Xeon, Core, Celeron, etc)</p></li>
+<li><p><code>luk-phi-mpss-knl</code> : For MPSS offload to x200 Phi Cards (7220 or 7240), on special builds where even the host system uses a Xeon Phi CPU (upon special request)</p></li>
+</ul>
+<p>Note that cpu, knc, knc-native, and knc-mpss have been disabled and are no longer supported.</p>
+<h2 id="command-line-arguments">Command line arguments</h2>
+<p>The miner understands the following arguments:</p>
+<ul>
+<li><p><code>--algo &lt;alg&gt; | -a &lt;alg&gt;</code> : mining algorithm to use (see below)</p></li>
+<li><p><code>--host &lt;hostname&gt;</code> : hostname for the pool to use</p></li>
+<li><p><code>--port &lt;port&gt;</code>: port of the pool to use</p></li>
+<li><p><code>--user &lt;username&gt;</code>: username to use on the specified pool</p></li>
+<li><p><code>--pass &lt;password&gt;</code>: passwrod to use on the specified pool (usually 'x')</p></li>
+<li><p><code>--nicehash|-nh</code>: enable nicehash-mode</p></li>
+<li><p><code>--no-fail-on-malloc</code>: Do not fatally terminate upon failed huge-page memory allocation. By default the miner fatally teminates to &quot;gently remind you&quot; to turn on huge-page support for your system. If this is not possible, use this flag to silently ignore this error (though you <em>will</em> get lower hashrate).</p></li>
+<li><p><code>--donate &lt;host&gt; &lt;port&gt; &lt;user&gt; &lt;percent&gt;</code>: Donate the given percentage of your hash rate to the given user name / wallet name, on the given host:port pool.</p></li>
+<li><p><code>-l|--log-file &lt;logfile&gt;</code> : Specify a file name where logging outputs are to go.</p></li>
+<li><p><code>--simplified-logging</code> : Enables a (additional) simplified logging method in which all logs look like a simple &quot;LOG:field=value&quot; that is easier to parse by automated monitoring tools.</p></li>
+<li><p><code>--status-port &lt;port&gt;</code> : Opens a TCP port at which it serves the latest status logs</p></li>
+</ul>
+<h2 id="mining-algorithm-to-use">Mining Algorithm to Use</h2>
+<p>The miner currently understands the following algorithms (via &quot;--algo <alg>&quot;):</p>
+<ul>
+<li><p><code>xmr-v4r</code> : cryptonight version 4/random, as used by monero past Mar 2019 fork.</p></li>
+<li><p><code>xnalloy</code> : 'cryptonight alloy', as used by alloy coin</p></li>
+<li><p><code>xnhaven</code> : 'cryptonight haven', as used by haven coin</p></li>
+<li><p><code>xnheavy</code> : 'cryptonight heavy', as used in Loki, Saronite, etc</p></li>
+</ul>
+<h2 id="examples">Examples</h2>
+<p><strong>Example</strong>: Running the x200 Xeon Phi miner for mining Monero on dwarfpool (after the March 2019 'v4r' fork)</p>
+<pre><code>./luk-phi -a xmr-v4r --host xmr-usa.dwarfpool.com --port 8080 --user 45Pw3bWFJXQiR1hN97huM6BbNPpnYdPytWnTUbkEm6KS9MExU7Gtr3nBsVoZA746qhCEwqVsFuPdwfXVtZwXxHQ6LDyfBaL --pass x</code></pre>
+<p><strong>Example</strong>: Running the x200 Xeon Phi miner for mining loki on cryptoknight pool:</p>
+<pre><code>./luk-phi -a xnheavy --host loki.ingest.cryptoknight.cc --port 7733 --user LEc5AVn9BeME2zwrfEaKB3BHVEc8or1vMWNvk6QGDyQNefHTfuiBsFU3UfaECTD9c2gih94K9WqVQjbD9Juto1Pe225SAUn.100000</code></pre>
+<p><strong>Example</strong>: Running with x200 KNL PCI cards (7220A, 7240P) using MPSS offload (for loki on loki.miner.rocks pool):</p>
+<pre><code>./luk-mpss-knl -a xnheavy --host loki.miner.rocks --port 5555 --user LEc5AVn9BeME2zwrfEaKB3BHVEc8or1vMWNvk6QGDyQNefHTfuiBsFU3UfaECTD9c2gih94K9WqVQjbD9Juto1Pe225SAUn.100000 --pass w=myWorkerName</code></pre>
+<p><strong>Example:</strong> Running cpu miner for alloy coin:</p>
+<pre><code> ./luk-cpu -a xnalloy --host alloy.ingest.cryptoknight.cc --port 5662 --user A6MKy9TZabKU1LFuA7J97QXVrLMnWRMmhaM6GANzpU98i5wr31zNMEN39szAUvgPfoLw1Jvm3KnAnNzpWMBZfMYZBRPGdGr --pass x</code></pre>
+<p><strong>Example</strong>: Running old, x100 Xeon Phi PCI cards using MPSS offload; mining aeon on aeon-pool</p>
+<pre><code>./luk-mpss-knc -a aeon --host mine.aeon-pool.com --port 8080 --user Wmt5hTKURa1bzAaUroB9JQByeiK7nPooLf4KcMXBCjMfdbeoTHVWzXePHMiyGFTNVhgtzXrxn9vZTfCqKFD57oea2UV2de3Qy --pass x</code></pre>
+<p><strong>Example</strong>: Running with x200 KNL PCI cards (7220A, 7240P) using MPSS offload (for haven):</p>
+<pre><code>./luk-mpss-knl -a xnhaven --host haven.miner.rocks --port 4005 --user hvxxwLQB2wC1dmdSzw1fyTiMUhPa438YxgrZZPsv1Tkj5tgMLpN58SDikUGfBmkJ7RXXTRAzmYALa9vMe5P55L1m3aGHQpLWcM.100000 --pass w=myWorkerName</code></pre>
+<p><strong>Example</strong>: Running with x200 KNL PCI cards (7220A, 7240P) using MPSS offload (for stellite):</p>
+<pre><code>./luk-mpss-knl -a xnstellite --host stellite.ingest.cryptoknight.cc --port 16222 --user Se48FcbD5uWF2AVsMgDuj918yTtRDPC5H218ZsXBP6jtCpmGdDa8D97Q6f9jWWUkeK2snno9rr8CoVjU1KKh7vxP13C6xLVGx.150000 --pass &#39;w=myRig&#39;</code></pre>
+<p><strong>Example</strong>: Bittube/IPBC</p>
+<pre><code>     ./luk-cpu -a ipbc --host tube.ingest.cryptoknight.cc --user bxcH7ypUkmt12peei8zF9ocUT92AJhxgiPi4MRotgmRaaUDa3V1uhj9ac9SQCzAVUnPeJ66HxJ9zs97ZF2MXENWj1P54GdaYh --port 5631 --pass &#39;w=myRig&#39;</code></pre>
+<h1 id="additional-information-on-different-binaries">Additional Information on Different Binaries</h1>
+<p>LukMiner comes with multiple <em>different</em> pre-compiled binaries; typially because either a given platofrm requires a binary that isn't compatible with other platforms (say, <code>-knc-native</code> for knights corner devices won't run on a regular CPU; or x200 Phi binaries won't run on x100 Phi cards, etc); or because a binary requires additional dependencies that not everybody might have (e.g., the <code>-mpss</code> binaries requires you to have a working install of the intel MPSS stack, which many machines do not have).</p>
+<p>As such, you first have to choose the right binary from the following list:</p>
+<h2 id="binaries-you-run-directly-on-the-cpu">Binaries you run directly on the CPU</h2>
+<ul>
+<li><p><code>luk-cpu</code> : For regular CPUs: Intel Core, Intel Xeon, Intel Celeron, AMD Opteron, AMD FX, etcpp. Pretty much everything that has an x86 compatible instruction set. This binary is intentionally without any form of GPU mining, thus running even on older systems without (or with broken) GPU drivers.</p></li>
+<li><p><code>luk-phi</code> : For <em>bootable</em> x200 &quot;Knights Landing&quot; (or &quot;Knights Mill&quot;) Xeon Phis (ie, typically the Asrock or Exxact machines that the blog talked about.</p></li>
+</ul>
+<h2 id="binaries-to-drive-pci-cards-xeon-phis-or-gpus">Binaries to drive PCI cards (Xeon Phis or GPUs)</h2>
+<ul>
+<li><code>luk-mpss-knl</code> : For MPSS offloading to the newer, x200 &quot;Knights Landing&quot; cards (7220 and 7240).</li>
+</ul>
+<p>All all these three &quot;offload&quot; binaries <em>also</em> contain the plain cpu driver, so unless you turn CPU mining off explicitly it will automatically run on all GPUs/Phis <em>and</em> on the CPU.</p>
+<h1 id="release-notes">Release Notes</h1>
+<ul>
+<li><p>v0.15.12</p></li>
+<li>lots of accumulated bug-fixes</li>
+<li>re-enabled coins haven, alloy, heavy.</li>
+<li><p>significant performance boost for xmr-v4r</p></li>
+<li><p>v0.15.7</p></li>
+<li><p>bugfix for running mpss miner on non-avx supporting machines</p></li>
+<li><p>v0.15.6</p></li>
+<li><p>re-activated luk-cpu, and improved performance on phi</p></li>
+<li><p>v0.15.3</p></li>
+<li><p>fixed crash with blockchain height 1788000</p></li>
+<li><p>v0.15.1</p></li>
+<li><p>added v4r support also to mpss-knl miner. Disabled KNC and older CPU codes.</p></li>
+<li><p>v0.15.0</p></li>
+<li><p>added support for '-a xmr-v4r' (Monero v4/Random as of Mar 2019).</p></li>
+<li><p>v0.14</p></li>
+<li><p>axed deprecated opencl and cuda codes, as well as binaries for that</p></li>
+<li><p>significant rewrite of v8 miner</p></li>
+<li><p>v0.12.0</p></li>
+<li><p>Now supporting Monero v8 fork: <code>-a xmrv8</code></p></li>
+<li><p>v0.11.4</p></li>
+<li><p>Now supporting 'masari' coin: <code>-a masari</code></p></li>
+<li><p>v0.11.3</p></li>
+<li><p>Now supporting 'stellite' coin: <code>-a stellite</code></p></li>
+<li><p>v0.11.2</p></li>
+<li><p>Now supporting 'haven' coin: <code>-a haven</code></p></li>
+<li><p>v0.11.0</p></li>
+<li><p><code>-a xmr</code> now points to xmr<em>-v7</em> algorithm</p></li>
+<li><p>new binary luk-phi-mpss-knl for rigs with knl cards in socketed phi mainboards</p></li>
+<li><p>xnheavy devshare now goes to loki, on cryptoknight pool (with fixed difficulty)</p></li>
+<li><p>pulled support for xndark algorithm; seems to me this project died.</p></li>
+<li><p>can now specify log-file location (-l <logfile>)</p></li>
+<li><p>can now specify simplified status logging, as well as a status port.</p></li>
+<li><p>watchdog off by default</p></li>
+<li><p>preliminary support for alloy (-a xnalloy)</p></li>
+<li><p>v0.10.8</p></li>
+<li><p>some more performance for cryptonight heavy (loki / sumo)</p></li>
+<li><p>v0.10.7</p></li>
+<li><p>full support for &quot;CryptoNight Light v1&quot; as used in Turtle</p></li>
+<li><p>v0.10.4</p></li>
+<li><p>several optimizations to sumo</p></li>
+<li><p>v0.10.2</p></li>
+<li><p>support for &quot;CryptoNight Heavy&quot; as used in Sumo v1</p></li>
+<li><p>v0.10.1</p></li>
+<li><p>Various bugfixes, in particular re outputs</p></li>
+<li><p>First support for &quot;-a xmr-v7&quot; for monero v7 fork (fixed in all of cpu, knc, knl, and ocl)</p></li>
+<li><p>v0.10.0</p></li>
+<li><p>Lots of various bugfixes</p></li>
+<li><p>Added support for x200 MPSS offloading; can now do both mpss offload and native mining for both x100 and x200</p></li>
+<li><p>Added cryptonight dark (bitnote) algorithm</p></li>
+<li><p>Reduced number of binaries via unifying miners: Rather than having different miners for different algorithm we now use a single binary and specify mining algorithm via &quot;-a <algoname>&quot;. Also all miners now support all mining algorithms.</p></li>
+<li><p>Better documentation via auto-generated README.html; will now automatically get distributed to public releases/</p></li>
+<li><p>Generating different releases based on dependencies: regular (cpu, opencl, phi), x100 KNC witht MPSS 3.8, and x200 phi MPSS offload (MPSS 4.4)</p></li>
+<li><p>releases now hosted on <code>files.lukminer.net/releases</code></p></li>
+<li><p>now have auto-booting lukSticks for cpu, phi, phi-mpss, and knc-mpss</p></li>
+</ul>
